@@ -8,6 +8,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func PostUser(c *gin.Context) {
+	user := structs.User{}
+	err := c.BindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, "Error: "+err.Error())
+		return
+	}
+	newUser := structs.CreateUser(user)
+	c.JSON(http.StatusOK, newUser)
+}
+
+func CreateUserList(c *gin.Context) {
+	users := structs.Users{}
+	err := c.BindJSON(&users)
+	if err != nil {
+		// c.JSON(http.StatusNotAcceptable, "Error: "+err.Error())
+		c.String(400, "Error:%s", err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}
+
 func GetUsers(c *gin.Context) {
 	// c.JSON(http.StatusOK, users)
 	users := structs.GetUsers()
@@ -22,27 +44,6 @@ func GetUserById(c *gin.Context) {
 	} else {
 		log.Println("User ->", user)
 		c.JSON(http.StatusOK, user)
-	}
-}
-
-func PostUser(c *gin.Context) {
-	user := structs.User{}
-	err := c.BindJSON(&user)
-	if err != nil {
-		c.JSON(http.StatusNotAcceptable, "Error: "+err.Error())
-		return
-	}
-	newUser := structs.CreateUser(user)
-	c.JSON(http.StatusOK, newUser)
-}
-
-func DeleteUser(c *gin.Context) {
-	result := structs.DeleteUser(c.Param("id"))
-
-	if result {
-		c.JSON(http.StatusOK, "Successfully deleted.")
-	} else {
-		c.JSON(http.StatusNotFound, "Error")
 	}
 }
 
@@ -61,4 +62,14 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, user)
+}
+
+func DeleteUser(c *gin.Context) {
+	result := structs.DeleteUser(c.Param("id"))
+
+	if result {
+		c.JSON(http.StatusOK, "Successfully deleted.")
+	} else {
+		c.JSON(http.StatusNotFound, "Error")
+	}
 }

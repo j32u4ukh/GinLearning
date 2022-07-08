@@ -4,10 +4,13 @@ import (
 	"GinLearning/database"
 	. "GinLearning/internal"
 	"GinLearning/middleware"
+	"GinLearning/structs"
 	"io"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 func setupLogging() {
@@ -18,7 +21,14 @@ func setupLogging() {
 func main() {
 	setupLogging()
 	router := gin.Default()
-	router.Use(gin.BasicAuth(gin.Accounts{"Tom": "123456"}), middleware.Logger())
+
+	// 註冊 Validator 的 Func
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("userpasd", middleware.IsValidPassword)
+		v.RegisterStructValidation(middleware.UserList, structs.Users{})
+	}
+
+	router.Use(gin.Recovery(), middleware.Logger())
 	v1 := router.Group("/v1")
 	AddUserRouter(v1)
 	go database.Connect()
