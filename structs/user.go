@@ -5,8 +5,9 @@ import (
 	"log"
 )
 
+// DB 命名要用 Users，似乎是 gorm 的限制
 type User struct {
-	Id       int    `json:"UserId"`
+	Id       int    `json:"UserId"` // struct Id -> gorm db: id; struct UserId -> gorm db: user_id
 	Name     string `json:"UserName"`
 	Password string `json:"UserPassword"`
 	Email    string `json:"UserEmail"`
