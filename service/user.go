@@ -4,12 +4,9 @@ import (
 	"GinLearning/structs"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
-var userList = []structs.User{}
 
 func GetUsers(c *gin.Context) {
 	// c.JSON(http.StatusOK, users)
@@ -35,46 +32,33 @@ func PostUser(c *gin.Context) {
 		c.JSON(http.StatusNotAcceptable, "Error: "+err.Error())
 		return
 	}
-	userList = append(userList, user)
-	c.JSON(http.StatusOK, "Successfully posted.")
+	newUser := structs.CreateUser(user)
+	c.JSON(http.StatusOK, newUser)
 }
 
 func DeleteUser(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	idx := -1
+	result := structs.DeleteUser(c.Param("id"))
 
-	for i, user := range userList {
-		log.Print(user)
-		if user.Id == id {
-			idx = i
-			break
-		}
-	}
-
-	if idx != -1 {
-		userList = append(userList[:idx], userList[idx+1:]...)
+	if result {
 		c.JSON(http.StatusOK, "Successfully deleted.")
 	} else {
 		c.JSON(http.StatusNotFound, "Error")
 	}
 }
 
-func PutUser(c *gin.Context) {
-	origin := structs.User{}
-	err := c.BindJSON(&origin)
+func UpdateUser(c *gin.Context) {
+	user := structs.User{}
+	err := c.BindJSON(&user)
 	if err != nil {
 		c.JSON(http.StatusNotAcceptable, "Error: "+err.Error())
 		return
 	}
-	id, _ := strconv.Atoi(c.Param("id"))
-	for i, user := range userList {
-		log.Print(user)
-		if user.Id == id {
-			userList[i] = origin
-			log.Print(userList[i])
-			c.JSON(http.StatusOK, "Successfully.")
-			return
-		}
+	user = structs.UpdateUser(c.Param("id"), user)
+
+	if user.Id == 0 {
+		c.JSON(http.StatusNotFound, "Error")
+		return
 	}
-	c.JSON(http.StatusNotFound, "Error")
+
+	c.JSON(http.StatusOK, user)
 }
