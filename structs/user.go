@@ -33,7 +33,7 @@ func GetUsers() []User {
 
 func GetUserById(id string) User {
 	var user User
-	database.DB.Where("id = ?", id).Find(&user)
+	database.DB.Where("id = ?", id).First(&user)
 	return user
 }
 
@@ -46,5 +46,11 @@ func DeleteUser(id string) bool {
 	var user User
 	result := database.DB.Where("id = ?", id).Delete(&user).RowsAffected
 	log.Println("result:", result)
-	return result != 0
+	return result > 0
+}
+
+func CheckUserPassword(name string, password string) User {
+	user := User{}
+	database.DB.Where("name = ? and password = ?", name, password).First(&user)
+	return user
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"GinLearning/middleware"
 	"GinLearning/structs"
 	"log"
 	"net/http"
@@ -71,5 +72,46 @@ func DeleteUser(c *gin.Context) {
 		c.JSON(http.StatusOK, "Successfully deleted.")
 	} else {
 		c.JSON(http.StatusNotFound, "Error")
+	}
+}
+
+func LoginUser(c *gin.Context) {
+	// NOTE: Postman 需使用 x-www-form-urlencoded，PostForm 才有辦法收到數據
+	name := c.PostForm("name")
+	password := c.PostForm("password")
+	log.Printf("name: %s\n", name)
+	log.Printf("password: %s\n", password)
+	user := structs.CheckUserPassword(name, password)
+
+	if user.Id == 0 {
+		c.JSON(http.StatusNotFound, "Error")
+	} else {
+		middleware.SaveSession(c, user.Id)
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Login successfully",
+			"User":    user,
+			"Session": middleware.GetSessionId(c),
+		})
+	}
+}
+
+// Logout user
+func LogoutUser(c *gin.Context) {
+	middleware.ClearSession(c)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logout successfully",
+	})
+}
+
+// Check user session
+func CheckUserSession(c *gin.Context) {
+	sessionId := middleware.GetSessionId(c)
+	if sessionId == 0 {
+		c.JSON(http.StatusUnauthorized, "Error")
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Check Session successfully",
+			"User":    middleware.GetSessionId(c),
+		})
 	}
 }
