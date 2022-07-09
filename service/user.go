@@ -132,3 +132,69 @@ func RedisAllUser(c *gin.Context) {
 	users := structs.GetUsers()
 	c.Set("dbAllUser", users)
 }
+
+////////////////////////////////////////////////////////////////
+// Mongo
+////////////////////////////////////////////////////////////////
+
+func MgoCreateUser(c *gin.Context) {
+	user := structs.User{}
+	err := c.BindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, "Error: "+err.Error())
+		return
+	}
+	newUser := structs.MgoCreateUser(user)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Create User by Mongo Successfully",
+		"User":    newUser,
+	})
+}
+
+func MgoGetUsers(c *gin.Context) {
+	users := structs.MgoGetUsers()
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Get  Users by Mongo Successfully",
+		"Users":   users,
+	})
+}
+
+func MgoGetUserById(c *gin.Context) {
+	user := structs.MgoGetUserById(c.Param("id"))
+	if user.Id == 0 {
+		c.JSON(http.StatusNotFound, "Error")
+	} else {
+		log.Println("User ->", user)
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Get User by Mongo Successfully",
+			"User":    user,
+		})
+	}
+}
+
+func MgoUpdateUser(c *gin.Context) {
+	user := structs.User{}
+	err := c.BindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusNotAcceptable, "Error: "+err.Error())
+		return
+	}
+	user = structs.MgoUpdateUser(c.Param("id"), user)
+
+	if user.Id == 0 {
+		c.JSON(http.StatusNotFound, "Error")
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+func MgoDeleteUser(c *gin.Context) {
+	result := structs.MgoDeleteUser(c.Param("id"))
+
+	if result {
+		c.JSON(http.StatusOK, "Successfully deleted.")
+	} else {
+		c.JSON(http.StatusNotFound, "Error")
+	}
+}

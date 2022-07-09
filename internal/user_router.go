@@ -30,4 +30,13 @@ func AddUserRouter(r *gin.RouterGroup) {
 		user.DELETE("/:id", service.DeleteUser)
 		user.GET("/logout", service.LogoutUser)
 	}
+
+	// Mongo
+	mgo := user.Group("/mongo")
+	mgo.GET("/", service.MgoGetUsers)
+	mgo.GET("/:id", service.MgoGetUserById)
+	mgo.POST("/", service.MgoCreateUser)
+	mgo.PUT("/:id", service.MgoUpdateUser)
+	mgo.DELETE("/:id", service.MgoDeleteUser)
+
 }

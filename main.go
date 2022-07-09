@@ -2,7 +2,7 @@ package main
 
 import (
 	"GinLearning/database"
-	. "GinLearning/internal"
+	"GinLearning/internal"
 	"GinLearning/middleware"
 	"GinLearning/structs"
 	"io"
@@ -30,7 +30,8 @@ func main() {
 
 	router.Use(gin.Recovery(), middleware.Logger())
 	v1 := router.Group("/v1")
-	AddUserRouter(v1)
-	go database.Connect()
+	internal.AddUserRouter(v1)
+	go database.ConnectMySQL()
+	go database.ConnectMongo()
 	router.Run(":8080")
 }
