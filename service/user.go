@@ -115,3 +115,20 @@ func CheckUserSession(c *gin.Context) {
 		})
 	}
 }
+
+// Redis user
+func RedisOneUser(c *gin.Context) {
+	id := c.Param("id")
+	if id == "0" {
+		c.JSON(http.StatusNotFound, "Error")
+		return
+	}
+	user := structs.GetUserById(id)
+	c.Set("dbResult", user)
+}
+
+// Redis all users
+func RedisAllUser(c *gin.Context) {
+	users := structs.GetUsers()
+	c.Set("dbAllUser", users)
+}

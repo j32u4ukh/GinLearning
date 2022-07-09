@@ -3,6 +3,7 @@ package internal
 import (
 	"GinLearning/middleware"
 	"GinLearning/service"
+	"GinLearning/structs"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,8 +13,8 @@ func AddUserRouter(r *gin.RouterGroup) {
 
 	user.POST("/", service.PostUser)
 	user.POST("/more", service.CreateUserList)
-	user.GET("/", service.GetUsers)
-	user.GET("/:id", service.GetUserById)
+	user.GET("/", service.CacheAllUserDecorator(service.RedisAllUser, "users", structs.User{}))
+	user.GET("/:id", service.CacheOneUserDecorator(service.RedisOneUser, "id", "user_%s", structs.User{}))
 
 	user.PUT("/:id", service.UpdateUser)
 
