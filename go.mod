@@ -11,6 +11,7 @@ require (
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (

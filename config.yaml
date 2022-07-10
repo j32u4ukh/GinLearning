@@ -1,0 +1,6 @@
+database:
+  username: "root"
+  password: "Birth=821018"
+  server: "127.0.0.1"
+  port: 3306
+  databasename: "Demo"
