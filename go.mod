@@ -10,7 +10,9 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
+	gopkg.in/olahol/melody.v1 v1.0.0-20170518105555-d52139073376 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
